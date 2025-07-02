@@ -1,3 +1,4 @@
+import java.util.Scanner;
 public class Main {
     public static class BankAccount {
         public double balance;
@@ -30,6 +31,7 @@ public class Main {
 
 
     public static void main(String[] args) {
+
         BankAccount first = new BankAccount(2000);
         BankAccount second = new BankAccount(1000);
 
@@ -63,5 +65,29 @@ public class Main {
 
         second.transfer(5000,first);
         second.withdraw(5000);
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Would you like to transfer any money? y/n");
+        String answer = scanner.nextLine();
+        if (answer.equals("y")){
+            System.out.println("first account balance:");
+            first.printBalance();
+            System.out.println("second account balance:");
+            second.printBalance();
+            System.out.println("enter amount of money to be transferred");
+            double amount = scanner.nextDouble();
+            scanner.nextLine();
+            System.out.println("do you want to transfer it from the first account to second? y/n");
+            String answer2 = scanner.nextLine();
+            if (answer2.equals("y")){
+                first.transfer(amount,second);
+            }else{
+                second.transfer(amount,first);
+            }
+            System.out.println("first account balance:");
+            first.printBalance();
+            System.out.println("second account balance:");
+            second.printBalance();
+        }
     }
 }
