@@ -1,93 +1,74 @@
 import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 public class Main {
     public static class BankAccount {
         public double balance;
-        public BankAccount(double balance) {
+        public String name;
+        short id;
+
+        public BankAccount(String name, double balance, short id) {
+            this.name = name;
             this.balance = balance;
+            this.id = id;
         }
-        public void deposit(double amount){
-            balance=balance+amount;
+
+        public void deposit(double amount) {
+            balance = balance + amount;
         }
-        public void withdraw(double amount){
-            if(balance>=amount) {
+
+        public void withdraw(double amount) {
+            if (balance >= amount) {
                 balance = balance - amount;
-            }else {
+            } else {
                 System.out.println("impossible operation");
             }
         }
-        public void printBalance(){
+
+        public void printBalance() {
             System.out.println(balance);
         }
-        public void transfer(double amount, BankAccount targetAccount){
-            if(balance>=amount) {
+
+        public void transfer(double amount, BankAccount targetAccount) {
+            if (balance >= amount) {
                 this.withdraw(amount);
                 targetAccount.deposit(amount);
-            }else {
+            } else {
                 System.out.println("impossible operation");
             }
         }
 
     }
 
+    public static List<BankAccount> readAccounts(String fileName) {
+        List<BankAccount> accounts = new ArrayList<>();
+
+        try (Scanner scanner = new Scanner(new File(fileName))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
+
+                if (parts.length == 3) {
+                    String name = parts[0].trim();
+                    double balance = Double.parseDouble(parts[1].trim());
+                    short id = Short.parseShort(parts[2].trim());
+                    accounts.add(new BankAccount(name, balance, id));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + fileName);
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing number: " + e.getMessage());
+        }
+        return accounts;
+    }
+
 
     public static void main(String[] args) {
-
-        BankAccount first = new BankAccount(2000);
-        BankAccount second = new BankAccount(1000);
-
-        System.out.println("initial balance");
-
-        first.printBalance();
-        second.printBalance();
-
-        first.withdraw(1000);
-
-        System.out.println("after withdraw");
-
-        first.printBalance();
-        second.printBalance();
-
-        second.deposit(1000);
-
-        System.out.println("after deposit");
-
-        first.printBalance();
-        second.printBalance();
-
-        second.transfer(500,first);
-
-        System.out.println("after transfer");
-
-        first.printBalance();
-        second.printBalance();
-
-        System.out.println("insufficient balance");
-
-        second.transfer(5000,first);
-        second.withdraw(5000);
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Would you like to transfer any money? y/n");
-        String answer = scanner.nextLine();
-        if (answer.equals("y")){
-            System.out.println("first account balance:");
-            first.printBalance();
-            System.out.println("second account balance:");
-            second.printBalance();
-            System.out.println("enter amount of money to be transferred");
-            double amount = scanner.nextDouble();
-            scanner.nextLine();
-            System.out.println("do you want to transfer it from the first account to second? y/n");
-            String answer2 = scanner.nextLine();
-            if (answer2.equals("y")){
-                first.transfer(amount,second);
-            }else{
-                second.transfer(amount,first);
-            }
-            System.out.println("first account balance:");
-            first.printBalance();
-            System.out.println("second account balance:");
-            second.printBalance();
+        List<BankAccount> accounts = readAccounts("accounts.txt");
+        System.out.println("Accounts loaded:");
+        for(int i=0;i<accounts.size();i++){
+            System.out.println(accounts.get(i).name+" "+accounts.get(i).balance+" "+accounts.get(i).id);
         }
     }
 }
