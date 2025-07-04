@@ -71,7 +71,7 @@ public class Main {
     }
 
 
-    public static void saveAccounts(Map<String, BankAccount> accounts, String fileName) {
+    public static void accountsUpdate(Map<String, BankAccount> accounts, String fileName) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
             for (BankAccount account : accounts.values()) {
                 writer.println(account.name + ", " + account.balance + ", " + account.id);
@@ -87,9 +87,10 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String answer;
 
-        do{
+        do {
             System.out.println("Would you like to transfer any money? y/n");
             answer = scanner.nextLine();
+
             if (answer.equals("y")) {
                 System.out.println("Enter sender account id");
                 String sender_id = scanner.nextLine();
@@ -99,14 +100,18 @@ public class Main {
                 double amount = scanner.nextDouble();
                 scanner.nextLine();
 
+                if (accounts.containsKey(sender_id) && accounts.containsKey(receiver_id)) {
                 accounts.get(sender_id).transfer(amount, accounts.get(receiver_id));
                 System.out.println("sender's balance is");
                 accounts.get(sender_id).printBalance();
                 System.out.println("receiver's balance is");
                 accounts.get(receiver_id).printBalance();
-                saveAccounts(accounts, "accounts.txt");
-            }
+                accountsUpdate(accounts, "accounts.txt");
+            }else {
+                    System.out.println("ID not found.");
+                }
+        }
         }while (!answer.equals("n"));
-        scanner.close();
+         scanner.close();
     }
 }
