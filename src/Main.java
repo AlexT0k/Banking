@@ -34,8 +34,8 @@ public class Main {
                 this.withdraw(amount);
                 targetAccount.deposit(amount);
                 try {
-                    FileWriter writer = new FileWriter("transactionHistory.txt");
-                    writer.write(this.name+"->"+targetAccount.name+"("+amount+")");
+                    FileWriter writer = new FileWriter("transactionHistory.txt",true);
+                    writer.write(this.name+"->"+targetAccount.name+"("+amount+")\n");
                     writer.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -59,7 +59,7 @@ public class Main {
                     String name = parts[0].trim();
                     double balance = Double.parseDouble(parts[1].trim());
                     String id = parts[2].trim();
-                    accounts.put(id,new BankAccount(name, balance, id));
+                    accounts.put(id, new BankAccount(name, balance, id));
                 }
             }
         } catch (FileNotFoundException e) {
@@ -70,6 +70,16 @@ public class Main {
         return accounts;
     }
 
+
+    public static void saveAccounts(Map<String, BankAccount> accounts, String fileName) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+            for (BankAccount account : accounts.values()) {
+                writer.println(account.name + ", " + account.balance + ", " + account.id);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
 
@@ -94,7 +104,9 @@ public class Main {
                 accounts.get(sender_id).printBalance();
                 System.out.println("receiver's balance is");
                 accounts.get(receiver_id).printBalance();
+                saveAccounts(accounts, "accounts.txt");
             }
         }while (!answer.equals("n"));
+        scanner.close();
     }
 }

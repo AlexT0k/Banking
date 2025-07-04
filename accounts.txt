@@ -1,3 +1,3 @@
-Joe Peach, 10000.0, 0328
 William Anderson, 20000.0, 1479
-Sean Smith, 30000.0, 1934
+Sean Smith, 20000.0, 1934
+Joe Peach, 20000.0, 0328
